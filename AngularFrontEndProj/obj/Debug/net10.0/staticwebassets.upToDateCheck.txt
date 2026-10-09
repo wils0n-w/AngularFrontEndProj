@@ -1,0 +1,6 @@
+wwwroot\app.js
+wwwroot\index.html
+wwwroot\styles.css
+C:\Users\Will\source\repos\AngularFrontEndProj\AngularFrontEndProj\wwwroot\app.js
+C:\Users\Will\source\repos\AngularFrontEndProj\AngularFrontEndProj\wwwroot\index.html
+C:\Users\Will\source\repos\AngularFrontEndProj\AngularFrontEndProj\wwwroot\styles.css

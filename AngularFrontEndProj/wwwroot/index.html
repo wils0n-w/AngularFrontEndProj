@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Telephone Directory</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">☎ Telephone Directory</div>
+  </header>
+  <main class="container">
+    <div class="layout">
+      <aside class="card">
+        <h3 id="form-title">Create</h3>
+        <form id="entry-form" autocomplete="off">
+          <input type="hidden" id="entry-id" />
+          <div style="margin-bottom:10px">
+            <label>Nama User
+              <input id="Nama_User" placeholder="Full name" required autofocus>
+            </label>
+          </div>
+          <div style="margin-bottom:10px">
+            <label>Alamat
+              <input id="Alamat" placeholder="Address">
+            </label>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:10px">
+            <label style="flex:1">No Telp
+              <input id="No_Telp" placeholder="Phone number">
+            </label>
+            <label style="width:120px">Kode Post
+              <input id="kode_post" placeholder="ZIP">
+            </label>
+          </div>
+          <div style="margin-bottom:6px">
+            <label>Date/Time
+              <input id="date_time" type="datetime-local">
+            </label>
+          </div>
+          <div class="form-actions">
+            <button class="btn ghost" type="button" id="form-cancel">Cancel</button>
+            <button class="btn" type="submit">Save</button>
+          </div>
+        </form>
+      </aside>
+
+      <section>
+        <div class="card">
+          <div class="topbar">
+            <h3 style="margin:0">Entries</h3>
+            <div class="search">
+              <input id="q" placeholder="Search name or phone...">
+              <button class="btn ghost" id="refresh">Refresh</button>
+            </div>
+          </div>
+
+          <div id="message-area"></div>
+          <div id="loading" class="muted">Loading...</div>
+          <div class="table-wrap">
+            <table id="items-table" class="hidden">
+              <thead><tr><th style="width:48px">Id</th><th>Nama</th><th>Alamat</th><th>Telp</th><th style="width:110px">kode_post</th><th style="width:170px">date_time</th><th style="width:120px">Actions</th></tr></thead>
+              <tbody id="items-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

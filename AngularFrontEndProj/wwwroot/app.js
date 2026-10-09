@@ -1,0 +1,149 @@
+const apiBase = '/api/TabelTelephone';
+
+async function fetchJson(url, options) {
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error('Request failed: ' + res.status);
+  return res.json();
+}
+
+function el(id){return document.getElementById(id)}
+
+function formatLocalInputFromIso(iso){
+  if(!iso) return '';
+  const d=new Date(iso);
+  const pad=(n)=>String(n).padStart(2,'0');
+  const yyyy=d.getFullYear();
+  const mm=pad(d.getMonth()+1);
+  const dd=pad(d.getDate());
+  const hh=pad(d.getHours());
+  const min=pad(d.getMinutes());
+  return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
+}
+
+function formatDisplayDate(iso){
+  if(!iso) return '';
+  const d=new Date(iso);
+  return d.toLocaleString();
+}
+
+async function loadItems(){
+  try{
+    el('loading').classList.remove('hidden');
+    el('items-table').classList.add('hidden');
+    const data = await fetchJson(apiBase);
+    const tbody = el('items-body');
+    tbody.innerHTML='';
+    data.forEach(it=>{
+      const tr=document.createElement('tr');
+    tr.innerHTML = `
+        <td>${it.id}</td>
+        <td>${escapeHtml(it.Nama_User)}</td>
+        <td>${escapeHtml(it.Alamat)}</td>
+        <td>${escapeHtml(it.No_Telp)}</td>
+        <td>${escapeHtml(it.kode_post)}</td>
+        <td>${escapeHtml(formatDisplayDate(it.date_time))}</td>
+        <td class="actions">
+          <button data-id="${it.id}" class="edit btn ghost">Edit</button>
+          <button data-id="${it.id}" class="delete btn danger">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+    el('loading').classList.add('hidden');
+    el('items-table').classList.remove('hidden');
+    attachRowHandlers();
+  }catch(e){
+    el('loading').textContent = 'Failed to load: ' + e.message;
+  }
+}
+
+function escapeHtml(s){ if(s==null) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function attachRowHandlers(){
+  document.querySelectorAll('button.edit').forEach(b=>b.onclick = ()=>{
+    const id = b.getAttribute('data-id'); editItem(id);
+  });
+  document.querySelectorAll('button.delete').forEach(b=>b.onclick = async ()=>{
+    const id = b.getAttribute('data-id');
+    if(!confirm('Delete item?')) return;
+    try{
+      await fetch(apiBase + '/' + id, {method:'DELETE'});
+      await loadItems();
+    }catch(e){ alert('Delete failed: ' + e.message); }
+  });
+}
+
+async function editItem(id){
+  try{
+    const it = await fetchJson(apiBase + '/' + id);
+    el('entry-id').value = it.id;
+    el('Nama_User').value = it.Nama_User || '';
+    el('Alamat').value = it.Alamat || '';
+    el('No_Telp').value = it.No_Telp || '';
+    el('kode_post').value = it.kode_post || '';
+    el('date_time').value = formatLocalInputFromIso(it.date_time);
+    el('form-title').textContent = 'Edit';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }catch(e){ alert('Load item failed: ' + e.message); }
+}
+
+function resetForm(){
+  el('entry-id').value='';
+  el('Nama_User').value='';
+  el('Alamat').value='';
+  el('No_Telp').value='';
+  el('kode_post').value='';
+  el('date_time').value='';
+  el('form-title').textContent = 'Create';
+}
+
+async function submitForm(ev){
+  ev.preventDefault();
+  const id = el('entry-id').value;
+  // simple validation
+  if(!el('Nama_User').value.trim()){
+    showMessage('Name is required','error');
+    return;
+  }
+  const payload = {
+    Nama_User: el('Nama_User').value,
+    Alamat: el('Alamat').value,
+    No_Telp: el('No_Telp').value,
+    kode_post: el('kode_post').value,
+    date_time: (el('date_time').value) ? new Date(el('date_time').value).toISOString() : new Date().toISOString()
+  };
+  try{
+    if(id){
+      await fetch(apiBase + '/' + id, {method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload, id: Number(id)})});
+    } else {
+      await fetch(apiBase, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    }
+    resetForm();
+    showMessage('Saved','success');
+    await loadItems();
+  }catch(e){ alert('Save failed: ' + e.message); }
+}
+
+function showMessage(text, type){
+  const area = el('message-area');
+  area.innerHTML = `<div class="message ${type==='success'? 'success':'error'}">${escapeHtml(text)}</div>`;
+  setTimeout(()=>{ area.innerHTML=''; }, 3000);
+}
+
+function setup(){
+  el('entry-form').addEventListener('submit', submitForm);
+  el('form-cancel').addEventListener('click', resetForm);
+  el('refresh').addEventListener('click', (e)=>{ e.preventDefault(); loadItems(); });
+  el('q').addEventListener('input', (e)=>{ applyFilter(e.target.value); });
+  loadItems();
+}
+
+function applyFilter(q){
+  q = (q||'').toLowerCase().trim();
+  document.querySelectorAll('#items-body tr').forEach(tr=>{
+    const txt = tr.textContent.toLowerCase();
+    tr.style.display = txt.indexOf(q) >= 0 ? '' : 'none';
+  });
+}
+
+document.addEventListener('DOMContentLoaded', setup);

@@ -1,0 +1,22 @@
+<div>
+  <div *ngIf="loading">Loading...</div>
+  <table *ngIf="!loading" border="1" cellpadding="6" style="width:100%;border-collapse:collapse">
+    <thead>
+      <tr><th>Id</th><th>Nama</th><th>Alamat</th><th>Telp</th><th>kode post</th><th>date</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let it of items">
+        <td>{{it.id}}</td>
+        <td>{{it.Nama_User}}</td>
+        <td>{{it.Alamat}}</td>
+        <td>{{it.No_Telp}}</td>
+        <td>{{it.kode_post}}</td>
+        <td>{{it.date_time}}</td>
+        <td>
+          <button (click)="doEdit(it.id!)">Edit</button>
+          <button (click)="doDelete(it.id!)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

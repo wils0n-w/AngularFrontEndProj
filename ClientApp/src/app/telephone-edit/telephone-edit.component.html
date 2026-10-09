@@ -1,0 +1,15 @@
+<div style="border:1px solid #ddd;padding:12px;margin-bottom:12px">
+  <div *ngIf="loading">Loading...</div>
+  <div *ngIf="!loading">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <label style="flex:1 1 200px">Nama:<br><input [(ngModel)]="model.Nama_User"></label>
+      <label style="flex:1 1 200px">Alamat:<br><input [(ngModel)]="model.Alamat"></label>
+      <label style="flex:1 1 120px">No Telp:<br><input [(ngModel)]="model.No_Telp"></label>
+      <label style="flex:1 1 120px">Kode Post:<br><input [(ngModel)]="model.kode_post"></label>
+      <label style="flex:1 1 220px">Date:<br><input type="datetime-local" [value]="(model.date_time | date:'yyyy-MM-ddTHH:mm')" (change)="model.date_time = $any($event.target).value"></label>
+    </div>
+    <div style="margin-top:8px">
+      <button (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

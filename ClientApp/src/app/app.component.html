@@ -1,0 +1,13 @@
+<div style="max-width:900px;margin:16px auto;font-family:Segoe UI, Arial">
+  <h2>Telephone Directory</h2>
+
+  <div style="margin-bottom:12px">
+    <a href="#" (click)="showCreate = true; editId = null">Create new</a>
+  </div>
+
+  <div *ngIf="showCreate">
+    <telephone-edit (saved)="onSaved($event)" [id]="editId"></telephone-edit>
+  </div>
+
+  <telephone-list (edit)="onEdit($event)"></telephone-list>
+</div>

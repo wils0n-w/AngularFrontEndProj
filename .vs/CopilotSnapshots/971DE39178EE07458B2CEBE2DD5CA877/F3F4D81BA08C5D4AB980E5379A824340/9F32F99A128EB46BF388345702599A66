@@ -1,0 +1,7 @@
+﻿body{font-family:Segoe UI,Arial;margin:20px;background:#f7f7f7}
+.container{max-width:900px;margin:0 auto;background:#fff;padding:16px;border-radius:6px}
+input{padding:6px;margin:4px 0;width:100%}
+table{width:100%;border-collapse:collapse;margin-top:12px}
+th,td{border:1px solid #ddd;padding:6px;text-align:left}
+.hidden{display:none}
+button{padding:6px 10px;margin:6px 4px}
